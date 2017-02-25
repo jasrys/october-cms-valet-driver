@@ -1,5 +1,4 @@
 <?php
-
 class OctoberCmsValetDriver extends ValetDriver
 {
     /**
@@ -12,13 +11,11 @@ class OctoberCmsValetDriver extends ValetDriver
      */
     public function serves($sitePath, $siteName, $uri)
     {
-        if (file_exists($sitePath.'/bootstrap/app.php')) {
+        if ((file_exists($sitePath.'/themes') && file_exists($sitePath.'/plugins')) || file_exists($sitePath.'/install.php')) {
             return true;
         }
-
         return false;
     }
-
     /**
      * Determine if the incoming request is for a static file.
      *
@@ -32,10 +29,8 @@ class OctoberCmsValetDriver extends ValetDriver
         if (file_exists($staticFilePath = $sitePath.'/'.$uri)) {
             return $staticFilePath;
         }
-
         return false;
     }
-
     /**
      * Get the fully resolved path to the application's front controller.
      *
@@ -46,6 +41,10 @@ class OctoberCmsValetDriver extends ValetDriver
      */
     public function frontControllerPath($sitePath, $siteName, $uri)
     {
-        return $sitePath.'/index.php';
+        if (file_exists($sitePath.'/install.php')) {
+            return $sitePath.'/install.php';
+        } else {
+            return $sitePath.'/index.php';
+        }
     }
 }
